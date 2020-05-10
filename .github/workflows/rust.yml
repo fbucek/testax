@@ -14,12 +14,12 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v1
-      run: cargo build 
-      run: cargo test
+    - run: cargo build 
+    - run: cargo test
 
   windows:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v1
-      run: cargo build 
-      run: cargo test
+    - run: cargo build 
+    - run: cargo test
