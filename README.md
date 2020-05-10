@@ -1,8 +1,8 @@
 # TestAx
 
 [![Build Status](https://github.com/fbucek/testax/workflows/build/badge.svg)](https://github.com/fbucek/testax/actions)
-<!-- [![Documentation](https://docs.rs/testax/badge.svg)](https://docs.rs/testax) -->
-<!-- [![crates.io](https://meritbadge.herokuapp.com/testax)](https://crates.io/crates/testax) -->
+[![Documentation](https://docs.rs/testax/badge.svg)](https://docs.rs/testax)
+[![crates.io](https://meritbadge.herokuapp.com/testax)](https://crates.io/crates/testax)
 
 Crate for testing actix GET/POST/UPDATE/DELETE
 
