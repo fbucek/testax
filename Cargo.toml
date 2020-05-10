@@ -1,0 +1,22 @@
+[package]
+name = "testax"
+version = "0.1.0"
+authors = ["Filip Bucek <fbucek@invloop.cz>"]
+description = "Crate for testing actix GET/POST/UPDATE/DELETE"
+edition = "2018"
+license = "MIT"
+repository = "https://github.com/fbucek/testax"
+readme = "README.md"
+exclude = [".github/*"]
+keywords = ["actix", "test"]
+categories = ["development-tools::testing"]
+
+[dependencies]
+# Web
+actix-web = "2.0"
+actix-web-httpauth = "0.4"
+actix-service = "1.0"
+actix-http = "1.0"
+
+[dev-dependencies]
+actix-rt = "1.1"
