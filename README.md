@@ -4,7 +4,7 @@
 [![Documentation](https://docs.rs/testax/badge.svg)](https://docs.rs/testax)
 [![crates.io](https://meritbadge.herokuapp.com/testax)](https://crates.io/crates/testax)
 
-Crate for testing actix GET/POST/UPDATE/DELETE
+Simple crate for testing basic actix GET/POST/UPDATE/DELETE
 
 ```toml
 [dev-dependencies]
@@ -14,7 +14,7 @@ testax = "0.1"
 ## TODO
 
 - [x] GET 
-- [ ] POST
+- [x] POST
 - [ ] UPDATE
 - [ ] DELETE
 - [ ] Universal??
