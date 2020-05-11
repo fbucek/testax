@@ -1,6 +1,6 @@
 [package]
 name = "testax"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Filip Bucek <fbucek@invloop.cz>"]
 description = "Crate for testing actix GET/POST/UPDATE/DELETE"
 edition = "2018"
