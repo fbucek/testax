@@ -1,5 +1,11 @@
 # Changes
 
+## [0.1.2] - 2020-05-16
+
+### Changed
+
+* Added  `call_service_res` which returns `Result<T>` instead of `T` in original `call_service` method
+
 ## [0.1.1] - 2020-05-10
 
 ### Changed

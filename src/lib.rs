@@ -33,7 +33,9 @@ where
     SERVICE: Service<Request = actix_http::Request, Response = ServiceResponse<BODY>, Error = E>,
 {
     let req = test::TestRequest::get().uri(url).to_request();
-    let resp = test::call_service(app, req).await;
+    let resp = call_service_res(app, req)
+        .await
+        .expect("Not expecting error response");
     let status = resp.status().clone();
     let body = test::read_body(resp).await;
     let body = String::from_utf8_lossy(&body).to_string();
@@ -83,7 +85,9 @@ where
     let req = test::TestRequest::post()
         .set_json(&json)
         .uri(url).to_request();
-    let resp = test::call_service(app, req).await;
+    let resp = call_service_res(app, req)
+        .await
+        .expect("Not expecting error response");
     let status = resp.status().clone();
     let body = test::read_body(resp).await;
     let body = String::from_utf8_lossy(&body).to_string();
@@ -92,6 +96,43 @@ where
         status,
         body,
     }
+}
+
+/// Calls service and waits for response future completion.
+/// 
+/// ## Note
+/// 
+/// When testing baerer/basic login which ends with AuthentificationError original method panic.
+/// This method returns `Result<T>` not `T` with `unwrap`
+///
+/// ```rust
+/// use actix_web::{test, App, HttpResponse, http::StatusCode};
+/// use actix_service::Service;
+///
+/// #[test]
+/// fn test_response() {
+///     let mut app = test::init_service(
+///         App::new()
+///             .service(web::resource("/test").to(|| async {
+///                 HttpResponse::Ok()
+///             }))
+///     ).await;
+///
+///     // Create request object
+///     let req = test::TestRequest::with_uri("/test").to_request();
+///
+///     // Call application
+///     let resp = test::call_service(&mut app, req).await;
+///     assert!(resp.is_ok());
+///     assert_eq!(resp.unwrap().status(), StatusCode::OK);
+/// }
+/// ```
+pub async fn call_service_res<S, R, B, E>(app: &mut S, req: R) -> Result<S::Response, S::Error>
+where
+    S: Service<Request = R, Response = ServiceResponse<B>, Error = E>,
+    E: std::fmt::Debug,
+{
+    app.call(req).await
 }
 
 #[cfg(test)]
