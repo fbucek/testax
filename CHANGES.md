@@ -1,5 +1,11 @@
 # Changes
 
+## [0.2.0] - 2020-05-16
+
+### Changed
+
+* Breaking changes: methods returns `anyhow::Result<T>` due to unexpected panic when expecting `Authorizaion` header but is missing.
+
 ## [0.1.2] - 2020-05-16
 
 ### Changed

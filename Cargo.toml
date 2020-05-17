@@ -12,6 +12,9 @@ keywords = ["actix", "test"]
 categories = ["development-tools::testing"]
 
 [dependencies]
+# Common
+anyhow = "1.0"
+
 # Web
 actix-web = "2.0"
 actix-web-httpauth = "0.4"

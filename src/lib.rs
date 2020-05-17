@@ -26,24 +26,25 @@ pub struct RespBody {
 ///     assert_eq!(resp.body, "Hello Filip! id:32");
 /// }
 /// ```
-pub async fn get<'a, SERVICE, BODY, E>(app: &'a mut SERVICE, url: &'a str) -> RespBody
+pub async fn get<'a, SERVICE, BODY, E>(app: &'a mut SERVICE, url: &'a str) -> anyhow::Result<RespBody>
 where
     BODY: actix_http::body::MessageBody,
     E: std::fmt::Debug,
     SERVICE: Service<Request = actix_http::Request, Response = ServiceResponse<BODY>, Error = E>,
 {
     let req = test::TestRequest::get().uri(url).to_request();
-    let resp = call_service_res(app, req)
-        .await
-        .expect("Not expecting error response");
+    let resp = match call_service_res(app, req).await {
+        Ok(resp) => resp,
+        Err(err) => return Err(anyhow::anyhow!("call_service_res failed: {:?}", err)),
+    };
     let status = resp.status().clone();
     let body = test::read_body(resp).await;
     let body = String::from_utf8_lossy(&body).to_string();
 
-    RespBody {
+    Ok(RespBody {
         status,
         body,
-    }
+    })
 }
 
 /// Post test method for Actix server
@@ -75,7 +76,7 @@ where
 ///     assert_eq!(resp.body, "Name is: Filip!");
 /// }
 /// ```
-pub async fn post_json<'a, SERVICE, BODY, SERDE, E>(app: &'a mut SERVICE, json: SERDE, url: &'a str) -> RespBody
+pub async fn post_json<'a, SERVICE, BODY, SERDE, E>(app: &'a mut SERVICE, json: SERDE, url: &'a str) -> anyhow::Result<RespBody>
 where
     BODY: actix_http::body::MessageBody,
     SERVICE: Service<Request = actix_http::Request, Response = ServiceResponse<BODY>, Error = E>,
@@ -85,17 +86,19 @@ where
     let req = test::TestRequest::post()
         .set_json(&json)
         .uri(url).to_request();
-    let resp = call_service_res(app, req)
-        .await
-        .expect("Not expecting error response");
+    let resp = match call_service_res(app, req).await {
+        Ok(resp) => resp,
+        Err(err) => return Err(anyhow::anyhow!("call_service_res failed: {:?}", err)),
+    };
+//        .expect("Not possible to get request");
     let status = resp.status().clone();
     let body = test::read_body(resp).await;
     let body = String::from_utf8_lossy(&body).to_string();
 
-    RespBody {
+    Ok(RespBody {
         status,
         body,
-    }
+    })
 }
 
 /// Calls service and waits for response future completion.
@@ -163,6 +166,8 @@ mod tests {
         let mut app = test::init_service(App::new().service(index)).await;
 
         let resp = get(&mut app, "/32/Filip").await;
+        assert!(resp.is_ok());
+        let resp = resp.unwrap();
         assert_eq!(resp.status.as_u16(), 200);
         assert_eq!(resp.body, "Hello Filip! id:32");
     }
@@ -172,6 +177,8 @@ mod tests {
         let mut app = test::init_service(App::new().service(index)).await;
 
         let resp = get(&mut app, "/32/Filip/Not").await;
+        assert!(resp.is_ok());
+        let resp = resp.unwrap();
         assert_eq!(resp.status.as_u16(), 404);
         assert_eq!(resp.body, "");
     }
@@ -182,6 +189,8 @@ mod tests {
 
         let user = User { name: "Filip".to_string() };
         let resp = post_json(&mut app, user, "/api/users").await;
+        assert!(resp.is_ok());
+        let resp = resp.unwrap();
         assert_eq!(resp.status.as_u16(), 200);
         assert_eq!(resp.body, "Name is: Filip!");
     }
