@@ -1,5 +1,11 @@
 # Changes
 
+## [0.3.0] - 2020-09-26
+
+### Actix-web 3.0 update
+
+* Updated to actix-web 3.0.x
+
 ## [0.2.0] - 2020-05-16
 
 ### Changed
