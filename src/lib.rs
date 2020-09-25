@@ -14,7 +14,8 @@ pub struct RespBody {
 /// use actix_service::Service;
 ///
 /// async fn index(info: web::Path<(u32, String)>) -> impl Responder {
-///     format!("Hello {}! id:{}", info.1, info.0)
+///     let (id, name) = info.into_inner();
+///     format!("Hello {}! id:{}", name, id)
 /// }
 /// 
 /// #[actix_rt::test]
@@ -28,7 +29,7 @@ pub struct RespBody {
 /// ```
 pub async fn get<'a, SERVICE, BODY, E>(app: &'a mut SERVICE, url: &'a str) -> anyhow::Result<RespBody>
 where
-    BODY: actix_http::body::MessageBody,
+    BODY: actix_http::body::MessageBody + Unpin,
     E: std::fmt::Debug,
     SERVICE: Service<Request = actix_http::Request, Response = ServiceResponse<BODY>, Error = E>,
 {
@@ -78,7 +79,7 @@ where
 /// ```
 pub async fn post_json<'a, SERVICE, BODY, SERDE, E>(app: &'a mut SERVICE, json: SERDE, url: &'a str) -> anyhow::Result<RespBody>
 where
-    BODY: actix_http::body::MessageBody,
+    BODY: actix_http::body::MessageBody + std::marker::Unpin,
     SERVICE: Service<Request = actix_http::Request, Response = ServiceResponse<BODY>, Error = E>,
     SERDE: serde::ser::Serialize,
     E: std::fmt::Debug,
@@ -146,7 +147,9 @@ mod tests {
 
     #[get("/{id}/{name}")]
     async fn index(info: web::Path<(u32, String)>) -> impl Responder {
-        format!("Hello {}! id:{}", info.1, info.0)
+        let (id, name) = info.into_inner();
+
+        format!("Hello {}! id:{}", name, id)
     }
 
     #[derive(Serialize, Deserialize)]
